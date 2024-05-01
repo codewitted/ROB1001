@@ -1,0 +1,81 @@
+// Define pin numbers for the LEDs
+const int redLightPin = 2;    // Red traffic light
+const int yellowLightPin = 3; // Yellow traffic light
+const int greenLightPin = 4;  // Green traffic light
+const int redPedestrianPin = 5;  // Red pedestrian light
+const int greenPedestrianPin = 6; // Green pedestrian light
+
+// Traffic light control timings
+const unsigned long redDuration = 5000;    // 5 seconds
+const unsigned long yellowDuration = 3000; // 3 seconds
+const unsigned long greenDuration = 5000;  // 5 seconds
+
+unsigned long lastChangeTime; // Time since last change in lights
+int currentLight = 0; // Current light status: 0 = red, 1 = yellow, 2 = green
+
+void setup() {
+  // Initialize all the LED pins as outputs
+  pinMode(redLightPin, OUTPUT);
+  pinMode(yellowLightPin, OUTPUT);
+  pinMode(greenLightPin, OUTPUT);
+  pinMode(redPedestrianPin, OUTPUT);
+  pinMode(greenPedestrianPin, OUTPUT);
+
+  // Start with the red light
+  digitalWrite(redLightPin, HIGH);
+  digitalWrite(redPedestrianPin, LOW);
+  digitalWrite(greenPedestrianPin, HIGH);
+  lastChangeTime = millis(); // Initialize the last changed time
+}
+
+void loop() {
+  unsigned long currentTime = millis();
+
+  switch (currentLight) {
+    case 0: // Red light
+      if (currentTime - lastChangeTime > redDuration) {
+        changeLightsToYellow();
+      }
+      break;
+    case 1: // Yellow light
+      if (currentTime - lastChangeTime > yellowDuration) {
+        changeLightsToGreen();
+      }
+      break;
+    case 2: // Green light
+      if (currentTime - lastChangeTime > greenDuration) {
+        changeLightsToRed();
+      }
+      break;
+  }
+}
+
+void changeLightsToRed() {
+  digitalWrite(redLightPin, HIGH);
+  digitalWrite(yellowLightPin, LOW);
+  digitalWrite(greenLightPin, LOW);
+  digitalWrite(redPedestrianPin, LOW);
+  digitalWrite(greenPedestrianPin, HIGH);
+  currentLight = 0;
+  lastChangeTime = millis();
+}
+
+void changeLightsToYellow() {
+  digitalWrite(redLightPin, LOW);
+  digitalWrite(yellowLightPin, HIGH);
+  digitalWrite(greenLightPin, LOW);
+  digitalWrite(redPedestrianPin, LOW);
+  digitalWrite(greenPedestrianPin, HIGH);
+  currentLight = 1;
+  lastChangeTime = millis();
+}
+
+void changeLightsToGreen() {
+  digitalWrite(redLightPin, LOW);
+  digitalWrite(yellowLightPin, LOW);
+  digitalWrite(greenLightPin, HIGH);
+  digitalWrite(redPedestrianPin, HIGH);
+  digitalWrite(greenPedestrianPin, LOW);
+  currentLight = 2;
+  lastChangeTime = millis();
+}
